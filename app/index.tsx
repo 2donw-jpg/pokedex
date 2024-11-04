@@ -1,37 +1,36 @@
 import React from 'react';
-import { Link, router, useRouter } from "expo-router";
+import { router, Link } from "expo-router";
 import { Image, ImageBackground, StyleSheet, TouchableOpacity, View,  Button} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function StartScreen() {
     
-    const handlePress = () => {
-        router.push('/list');
-    };
+    const goToList = () => {
+        router.push('/(pokedex)/list')
+    }
 
     return (
             <ImageBackground
-                source={require('../images/Pikachu-Pokemon-Anime-iphone-8.jpg')}
+                source={require('@/assets/images/cover_image.jpg')}
                 style={styles.contenedor}>
                 <View style={styles.topView}>
                     <Image
                         style={styles.logo}
-                        source={require('../images/logo.png')}
+                        source={require('@/assets/images/logo.png')}
                         resizeMode="contain"
                     />
                 </View>
                  <View style={styles.overlay}>
-                    <TouchableOpacity onPress={handlePress}>
-                    <Link href={"/scanner"}>
-                    Scan Pokemon
+                    <Link href={"/(pokedex)/list"}>
+                        <TouchableOpacity onPress={goToList}>
+                            <Image
+                                style={styles.logo2}
+                                source={require('@/assets/images/ingresar.png')}
+                                resizeMode="contain"
+                            />
+                        </TouchableOpacity>
                     </Link>
-                    <Image
-                        style={styles.logo2}
-                        source={require('../images/ingresar.png')}
-                        resizeMode="contain"
-                    />
-                    </TouchableOpacity>
                 </View> 
             </ImageBackground>
     );

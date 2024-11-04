@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react'
+import { Router, useLocalSearchParams } from 'expo-router';
 import {Text, View, Image, StyleSheet,SafeAreaView, ScrollView} from 'react-native';
 import axios from 'axios';
-import Poke from '../types/Pokemon';
-
-
+import Poke from '@/types/Pokemon';
+import PokeAbility from '@/types/PokemonAbilities';
+import { fetchPokemon } from '@/services/pokemonApi';
 
 const baseUrlAPI = 'https://pokeapi.co/api/v2/pokemon';
 const URLAb  = 'https://pokeapi.co/api/v2/ability';
 
 
-const Details = ({navigation, route}) => {
+const Details = () => {
   const [contenido, setContenido] = useState<Poke>();
   const [ability, setAbility] = useState<PokeAbility>();
+  const { codigo: queryCodigo } = useLocalSearchParams();
+  const [codigo, setCodigo] = useState(queryCodigo);
+  
+
+
 
   const loadPoke = async ()=>{
-    const codigo = route.params.codigo;
     const result  = await axios.get(`${baseUrlAPI}/${codigo}`);
     const resultAbilities = await axios.get(`${URLAb}/${codigo}`); 
-
+    
     if(result.data){
       setContenido(result.data);
     }
@@ -37,7 +42,7 @@ const Details = ({navigation, route}) => {
         <View>
           <Image
             style={styles.ImagePokemon}
-            source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/2a6a6b66983a97a6bdc889b9e0a2a42a25e2522e/sprites/pokemon/${route.params.codigo}.png`,}}
+            source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/2a6a6b66983a97a6bdc889b9e0a2a42a25e2522e/sprites/pokemon/${codigo}.png`,}}
           />
         </View>
         <View style={styles.roundedView1}>

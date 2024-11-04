@@ -1,65 +1,87 @@
-import React from "react";
-import Poke from "../types/Pokemon";
-import { StyleSheet, Text, View, Image } from "react-native";
-import QRScanner from "./QRScanner";
+import React from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
+interface PokemonProps {
+    codigo: number;
+    pokemons: {
+        name: string;
+    };
+    isCaught: boolean;
+    value: number | null;
+}
 
-type PokemonProps = {
-    codigo: number,
-    pokemons: Poke;
-};
+const PokemonList = (props: PokemonProps) => {
+    const { codigo, pokemons, isCaught, value } = props;
 
-const PokemonList = (props: PokemonProps) =>{
-    return(
+    return (
         <View style={styles.container}>
             <View style={styles.contenedorPokemon}>
                 <Image 
-                style={styles.ImagePokemon}
-                source={{uri: `https://raw.githubusercontent.com/PokeAPI/sprites/2a6a6b66983a97a6bdc889b9e0a2a42a25e2522e/sprites/pokemon/${props.codigo}.png`}}/>
-                <View style = {styles.contenedorDatosGenerales }>
-                    <Text style={styles.nombreEnFicha}>No. {props.codigo} {props.pokemons.name}</Text>
+                    style={[styles.imagePokemon]}
+                    source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/2a6a6b66983a97a6bdc889b9e0a2a42a25e2522e/sprites/pokemon/${codigo}.png` }}
+                />
+                <View style={styles.contenedorDatosGenerales}>
+                    <Text style={styles.nombreEnFicha}>No. {codigo} {pokemons.name}</Text>
+                    {isCaught && <Text style={styles.pokemonCaught}>+{props.value}</Text>}
                 </View>
-            </View>   
+            </View>
         </View>
-            
     );  
 };
+
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+    },
+
     contenedorPokemon: {
-      height: 90,
-      backgroundColor: "#CBCBCB", // Primary color
-      display: 'flex',
-      flexDirection: 'row',
-      marginBottom: 5,
-      padding: 5,
-      borderStyle: 'solid',
-      borderStartWidth: 7,
-      borderBottomEndRadius: 50 ,
-      borderTopEndRadius: 50,
-      borderColor: '#Bf070D', // Secondary color
+        flexDirection: 'row',
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        borderLeftColor: '#e74c3c',
+        borderLeftWidth: 10, 
+        padding: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 3,
+        marginVertical: 5,
+    },
+
+    imagePokemon: {
+        width: 80, 
+        height: 80,
+        marginRight: 10,
+    },
+    
+    contenedorDatosGenerales: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between', 
+        alignItems: 'center',
     },
     nombreEnFicha: {
-      fontSize: 24,
-      color: '#121212', // Secondary color
-      fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
     },
-    contenedorDatosGenerales: {
-      display: 'flex',
-      flexDirection: 'column',
-        
+
+    pokemonCaught: {
+        backgroundColor: '#e74c3c',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
-    ImagePokemon: {
-      height: 76,
-      width: 100,
-      marginRight: 10,
-    },
-    container: {
-      flex: 1,
-      backgroundColor: "#f0f0f0", // Secondary color
-      paddingHorizontal: 10,
-      paddingVertical: 3
-    },
-  });
-  
+});
 
 export default PokemonList;

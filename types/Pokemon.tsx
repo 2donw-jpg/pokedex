@@ -1,4 +1,4 @@
-type Poke = {
+type Pokemon = {
   id: number,
   name: string,
   base_experience: number,
@@ -7,4 +7,4 @@ type Poke = {
   order: number,
   weight: number
 }
-export default Poke;
+export default Pokemon;

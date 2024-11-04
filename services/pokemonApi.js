@@ -1,7 +1,12 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_URL = 'https://pokeapi.co/api/v2/pokemon';
+const POKEMON_API_URL = 'https://pokeapi.co/api/v2/pokemon?limit=151&offset=0';
 const URLAb  = 'https://pokeapi.co/api/v2/ability';
+const CACHE_KEY = 'pokemonData';
+const CACHE_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
 
 /**
  * Fetches Pokémon data by ID or name.
@@ -10,11 +15,12 @@ const URLAb  = 'https://pokeapi.co/api/v2/ability';
  */
 export const fetchPokemon = async (idOrName) => {
     try {
-      const response = await fetch(`${BASE_URL}/pokemon/${idOrName}`);
+      const response = await axios.get(`${BASE_URL}/${idOrName}`);
       if (!response.ok) {
         throw new Error(`Error fetching Pokémon with ID/Name: ${idOrName}`);
       }
       const data = await response.json();
+      console.log("Data: ", data.results);
       return data;
     } catch (error) {
       console.error('Failed to fetch Pokémon:', error);
@@ -23,22 +29,32 @@ export const fetchPokemon = async (idOrName) => {
   };
 
 /**
- * Fetches a list of Pokémon (defaulting to the first 151 Pokémon).
- * @param {number} limit - Number of Pokémon to fetch.
- * @param {number} offset - Starting position (0 for first Pokémon).
- * @returns {Promise<Object[]>} - Array of Pokémon data objects.
+ * Fetches all the first 151 pokemons
+ * @returns {Promise<Object>} - Pokémon data object.
  */
+export const fetchPokemonData = async () => {
+  try {
+    const cachedData = await AsyncStorage.getItem(CACHE_KEY);
 
-export const fetchPokemonList = async (limit = 151, offset = 0) => {
-    try {
-        const response = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
-        if (!response.ok) {
-            throw new Error('Error fetching Pokémon list');
-        }
-        const data = await response.json();
-        return data.results;
-    } catch (error) {
-        console.error('Failed to fetch Pokémon list:', error);
-        return [];
+    if (cachedData) {
+      const { data, timestamp } = JSON.parse(cachedData);
+      if (Date.now() - timestamp < CACHE_EXPIRATION_TIME) {
+        console.log("This comes from the cache");
+        return data; // Use cached data
+      }
     }
-  };
+
+    const response = await axios.get(POKEMON_API_URL);
+    const data = await response.json();
+
+    await AsyncStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ data, timestamp: Date.now() })
+    );
+    console.log("This comes from the API call");
+    return data;
+  } catch (error) {
+    console.error("Error fetching Pokemon data:", error);
+    throw error;
+  }
+};

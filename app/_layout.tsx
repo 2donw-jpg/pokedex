@@ -1,27 +1,18 @@
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
     <Stack>
-{/*       <Stack.Screen 
-        name="index" 
+      <Stack.Screen name="index" options={{ headerShown: false }}/>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }}/>
+      <Stack.Screen name="(pokedex)" options={{ headerShown: false }} />
+      <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+      <Stack.Screen name="+not-found" options={{ headerShown: false }}/>
+{/*       <Stack.Screen
+        name="pokemon-modal"
         options={{
-          headerTransparent: true,
-          headerTitle: '',
-          headerStyle: { backgroundColor: 'transparent' }
+          presentation: 'modal',
         }}
-      />
-      <Stack.Screen
-        name="list"
-        options={{
-          headerTransparent: true,
-          headerTitle: '',
-          headerStyle: { backgroundColor: 'transparent' },
-          headerBackVisible: false
-        }}
-      />
-      <Stack.Screen
-        name="detail"
       /> */}
     </Stack>
   );
