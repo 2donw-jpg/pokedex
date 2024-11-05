@@ -1,20 +1,27 @@
-// PokemonScreen.js
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, Pressable, ActivityIndicator, Text } from 'react-native';
-import { fetchPokemonData, fetchPokemon } from '@/services/pokemonApi'; // Import fetch function
-import PokemonList from '@/components/PokemonList'; // Import PokemonList component
+import { fetchPokemonData } from '@/services/pokemonApi';
+import PokemonList from '@/components/PokemonList';
 import { router } from 'expo-router';
-
+import { getUserProfile } from '@/services/dbService';
+import { DocumentData } from 'firebase/firestore';
+import { getPokemonPoints, calculateTotalPoints } from '@/services/pokemonRanking';
 
 const PokemonScreen = () => {
   const [contenido, setContenido] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<DocumentData>();
 
   useEffect(() => {
     const loadPokemonData = async () => {
+      setLoading(true);
       try {
         const data = await fetchPokemonData();
-        setContenido(data.results); // Use `results` from API response
+        const userProfile = await getUserProfile();
+        setProfile(userProfile);
+        setContenido(data.results);
+        console.log(profile);
+         // Guardar el perfil obtenido
       } catch (error) {
         console.error("Failed to load Pokémon data:", error);
       } finally {
@@ -25,35 +32,40 @@ const PokemonScreen = () => {
     loadPokemonData();
   }, []);
 
+
+  const totalPoints = profile && profile.pokemons ? calculateTotalPoints(profile.pokemons) : 0;
+
+
   const handlePress = (index) => {
-    console.log(`Pressed Pokémon #${index}`);
     router.push(`/detail?codigo=${index}`); 
   };
 
   return (
     <>    
-    <Pressable onPress={() => router.push("/scanner")}>
-      <Text>Scan here</Text>
-    </Pressable>
+      <Pressable onPress={() => router.push("/scanner")}>
+        <Text>Scan here</Text>
+      </Pressable>
 
-    <Text>Puntos totales: 400</Text>
-    <SafeAreaView>
-      <ScrollView
-      showsVerticalScrollIndicator={false} // Hide the vertical scrollbar
-      showsHorizontalScrollIndicator={false}>
-        {contenido.map((p, index) => (
-          <Pressable key={p.name} onPress={() => handlePress(index + 1)} style={{ pointerEvents: 'auto' }}>
-            <PokemonList codigo={index + 1} pokemons={p} isCaught={true} value={10}/>
-          </Pressable>
-        ))}
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      </ScrollView>
-    </SafeAreaView>
+      <Text>Puntos totales: {totalPoints}</Text>
+      <SafeAreaView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          {contenido.map((p, index) => (
+            <Pressable key={p.name} onPress={() => handlePress(index + 1)} style={{ pointerEvents: 'auto' }}>
+              <PokemonList 
+                code={index + 1} 
+                pokemons={p} 
+                isCaught={profile && profile.pokemons && profile.pokemons.includes(index + 1)} 
+                value={getPokemonPoints(index + 1)}
+              />
+            </Pressable>
+          ))}
+          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        </ScrollView>
+      </SafeAreaView>
     </>
-
   );
 };
-
-
 
 export default PokemonScreen;

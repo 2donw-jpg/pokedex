@@ -7,7 +7,6 @@ const URLAb  = 'https://pokeapi.co/api/v2/ability';
 const CACHE_KEY = 'pokemonData';
 const CACHE_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-
 /**
  * Fetches Pokémon data by ID or name.
  * @param {number|string} idOrName - Pokémon ID (1-151) or name (e.g., 'bulbasaur').
@@ -19,7 +18,7 @@ export const fetchPokemon = async (idOrName) => {
       if (!response.ok) {
         throw new Error(`Error fetching Pokémon with ID/Name: ${idOrName}`);
       }
-      const data = await response.json();
+      const data = await response.data;
       console.log("Data: ", data.results);
       return data;
     } catch (error) {
@@ -28,6 +27,9 @@ export const fetchPokemon = async (idOrName) => {
     }
   };
 
+
+
+  
 /**
  * Fetches all the first 151 pokemons
  * @returns {Promise<Object>} - Pokémon data object.
@@ -45,7 +47,7 @@ export const fetchPokemonData = async () => {
     }
 
     const response = await axios.get(POKEMON_API_URL);
-    const data = await response.json();
+    const data = await response.data;
 
     await AsyncStorage.setItem(
       CACHE_KEY,

@@ -2,11 +2,13 @@ import React from 'react';
 import { router, Link } from "expo-router";
 import { Image, ImageBackground, StyleSheet, TouchableOpacity, View,  Button} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { anonSignIn } from '@/services/authService';
 
 
 export default function StartScreen() {
     
     const goToList = () => {
+        anonSignIn();
         router.push('/(pokedex)/list')
     }
 

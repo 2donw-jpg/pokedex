@@ -8,12 +8,6 @@ export default function RootLayout() {
       <Stack.Screen name="(pokedex)" options={{ headerShown: false }} />
       <Stack.Screen name="(admin)" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" options={{ headerShown: false }}/>
-{/*       <Stack.Screen
-        name="pokemon-modal"
-        options={{
-          presentation: 'modal',
-        }}
-      /> */}
     </Stack>
   );
 }

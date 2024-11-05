@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 interface PokemonProps {
-    codigo: number;
+    code: number;
     pokemons: {
         name: string;
     };
@@ -11,18 +11,17 @@ interface PokemonProps {
 }
 
 const PokemonList = (props: PokemonProps) => {
-    const { codigo, pokemons, isCaught, value } = props;
-
+    const { code, pokemons, isCaught, value } = props;
     return (
         <View style={styles.container}>
             <View style={styles.contenedorPokemon}>
                 <Image 
                     style={[styles.imagePokemon]}
-                    source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/2a6a6b66983a97a6bdc889b9e0a2a42a25e2522e/sprites/pokemon/${codigo}.png` }}
+                    source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/2a6a6b66983a97a6bdc889b9e0a2a42a25e2522e/sprites/pokemon/${code}.png` }}
                 />
                 <View style={styles.contenedorDatosGenerales}>
-                    <Text style={styles.nombreEnFicha}>No. {codigo} {pokemons.name}</Text>
-                    {isCaught && <Text style={styles.pokemonCaught}>+{props.value}</Text>}
+                    <Text style={styles.nombreEnFicha}>No.{code}  {pokemons.name}</Text>
+                    {isCaught && <Text style={styles.pokemonCaught}>+{value}</Text>}
                 </View>
             </View>
         </View>
@@ -43,13 +42,13 @@ const styles = StyleSheet.create({
         borderLeftColor: '#e74c3c',
         borderLeftWidth: 10, 
         padding: 10,
-        shadowColor: '#000',
+/*         shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
         },
         shadowOpacity: 0.1,
-        shadowRadius: 2,
+        shadowRadius: 2, */
         elevation: 3,
         marginVertical: 5,
     },
