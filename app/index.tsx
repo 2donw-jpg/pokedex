@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { router, Link } from "expo-router";
-import { Image, ImageBackground, StyleSheet, TouchableOpacity, View,  Button} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { anonSignIn } from '@/services/authService';
+import { Image, ImageBackground, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { getCurrentUser } from '@/services/authService';
 
-
-export default function StartScreen() {
-    
-    const goToList = () => {
-        anonSignIn();
-        router.push('/(pokedex)/list')
+export default function HomeScreen() {
+    const checkAuth = () => {
+        const user = getCurrentUser();
+        if(user){
+            router.push('/list');
+        }else{
+            router.push('/signIn');
+        }
     }
+    
 
     return (
             <ImageBackground
@@ -24,15 +26,13 @@ export default function StartScreen() {
                     />
                 </View>
                  <View style={styles.overlay}>
-                    <Link href={"/(pokedex)/list"}>
-                        <TouchableOpacity onPress={goToList}>
+                        <TouchableOpacity onPress={checkAuth}>
                             <Image
                                 style={styles.logo2}
                                 source={require('@/assets/images/ingresar.png')}
                                 resizeMode="contain"
                             />
                         </TouchableOpacity>
-                    </Link>
                 </View> 
             </ImageBackground>
     );

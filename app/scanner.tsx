@@ -3,7 +3,7 @@ import { Stack, router, useFocusEffect } from "expo-router";
 import { AppState, Platform, SafeAreaView, StatusBar, StyleSheet} from "react-native";
 //import { Overlay } from "./Overlay"; 
 import { useEffect, useRef } from "react";
-//import addCaughtPokemon from '../../services/testing_stored_values';
+import { addCaughtPokemon } from '@/services/dbService';
 
 const REGEX = /^(0[0-9]{2}|1[0-4][0-9]|150|151)$/;
 
@@ -16,8 +16,9 @@ export default function Home() {
     if (REGEX.test(data) && !qrLock.current) {
       const pokemonId = parseInt(data, 10);
       qrLock.current = true;
-      //addCaughtPokemon(data);
-      router.push(`/detail?codigo=${pokemonId}`); 
+      addCaughtPokemon(data);
+      // @ts-ignore
+      router.push(`/details?codigo=${pokemonId}`); 
     }
   };
 

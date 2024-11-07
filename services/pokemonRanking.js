@@ -1,3 +1,5 @@
+//* DONE
+
 const pokemonRarity = {
     veryLow: [10, 13, 16, 19, 21, 23, 27, 29, 32, 41, 43, 46, 48, 50, 54, 56, 58, 60, 69, 74],
     low: [1, 2, 3, 11, 14, 17, 20, 22, 24, 25, 30, 33, 35, 36, 37, 39, 42, 44, 45, 52, 53, 55, 61, 63, 66, 70, 72, 77, 81, 84, 86, 90, 92, 96],
@@ -21,13 +23,12 @@ ids.forEach(id => {
 return acc;
 }, {});
 
-
 export function calculateTotalPoints(pokemonIds) {
 return pokemonIds.reduce((total, id) => total + (pokemonPoints[id] || 0), 0);
 }
 
 export function getPokemonPoints(id) {
-    return pokemonPoints[id] || 0;
+return pokemonPoints[id] || 0;
 }
 
 

@@ -1,25 +1,42 @@
  // authService.js
 import { auth } from '@/services/firebaseConfig';
-import { signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged,signInAnonymously, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile  } from 'firebase/auth';
+import { createTrainer } from '@/services/dbService';
 
-
-export const anonSignIn = async () => {
-  signInAnonymously(auth)
-  .then(() => {
-    console.log("Signed in Anon successfully");
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log('errorCode: ', errorCode);
-    console.log('errorMessage: ', errorMessage);
-  });
+export const getCurrentUser = () => {
+  const currentUser = auth.currentUser;
+  console.log('User Connected: ', currentUser);
+  return currentUser;
 }
 
-export const signUp = async (email, password) => {
+export const anonSignIn = async () => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    return userCredential.user;
+    const result = await signInAnonymously(auth);
+    const user = result.user || auth.currentUser;
+    if (user) {
+      createTrainer(user.uid);
+    } else {
+      console.log("No user was found");
+    }
+  } catch (error) {
+    console.error('Error Code:', error.code);
+    console.error('Error Message:', error.message);
+  }
+};
+
+export const signUp = async (email, password, username) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    const user = result.user || auth.currentUser;
+    if (user) {
+      updateProfile(auth.currentUser, 
+        {
+        displayName: username, 
+      });
+      createTrainer(user.uid);
+    } else {
+      console.log("No user was found");
+    }
   } catch (error) {
     throw error;
   }

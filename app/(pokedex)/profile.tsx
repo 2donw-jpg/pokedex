@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { DocumentData } from 'firebase/firestore';
+import { User } from 'firebase/auth';
 import { fetchPokemonData } from '@/services/pokemonApi';
+import { getCurrentUser } from '@/services/authService';
 
 const PokemonProfileLayout = () => {
 
-    const getPokemonList = async ()  => {
-        const data = await fetchPokemonData();
-        console.log(data.results);
+    const [profile, setProfile] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const currentUser = async ()  => {
+        const user = getCurrentUser();
+        console.log('User connected: ', user?.email);
     }
+
+    useEffect(() => {
+        const loadUserData = async ()  => {
+            const user = getCurrentUser();
+            setProfile(user);
+        }
+        loadUserData();
+      }, []);
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -16,7 +31,7 @@ const PokemonProfileLayout = () => {
                     style={styles.profileImage}
                     source={{ uri: 'https://example.com/your-pokemon-character-image.jpg' }} 
                 />
-                <Text style={styles.profileName}>Ash Ketchum</Text>
+                <Text style={styles.profileName}>{profile?.displayName}</Text>
                 <Text style={styles.profileBio}>Pokémon Trainer & Master</Text>
             </View>
 
@@ -42,7 +57,7 @@ const PokemonProfileLayout = () => {
             </View>
 
             <View>
-                <TouchableOpacity onPress={getPokemonList}>
+                <TouchableOpacity onPress={currentUser}>
                     <Text style={styles.linkItem}>Click here to get the pokemon list</Text>
                 </TouchableOpacity>
             </View>

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Router, useLocalSearchParams } from 'expo-router';
 import {Text, View, Image, StyleSheet,SafeAreaView, ScrollView} from 'react-native';
 import axios from 'axios';
-import Poke from '../types/Pokemon';
+import Poke from '@/types/Pokemon';
 import PokeAbility from '@/types/PokemonAbilities';
-
+import { fetchPokemon } from '@/services/pokemonApi';
 
 const baseUrlAPI = 'https://pokeapi.co/api/v2/pokemon';
 const URLAb  = 'https://pokeapi.co/api/v2/ability';
@@ -16,8 +16,6 @@ const Details = () => {
   const { codigo: queryCodigo } = useLocalSearchParams();
   const [codigo, setCodigo] = useState(queryCodigo);
   
-
-
 
   const loadPoke = async ()=>{
     const result  = await axios.get(`${baseUrlAPI}/${codigo}`);
