@@ -1,15 +1,14 @@
 // dbService.js
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
 import { db, auth } from '@/services/firebaseConfig';
-
+import { refreshTrainerData } from '@/services/sessionProfile';
 
 //*GetUserProfile
 export async function getUserProfile() {
   const user = auth.currentUser;
-  console.log('User: ', user.uid);
-
+  
   if (!user) {
-    console.error("No user is currently logged in.");
+    console.error("[dbService/getUserProfile] No user is currently logged in.");
     return null; 
   }
 
@@ -17,23 +16,22 @@ export async function getUserProfile() {
   
   try {
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
-      console.log('Document data:', docSnap.data());
-      return docSnap.data(); // Return the user's profile data
+      console.log('[dbService/getUserProfile] Document data:', docSnap.data());
+      return docSnap.data(); 
     } else {
-      console.log('No such document!');
+      console.log('[dbService/getUserProfile] No such document!');
       return null; 
     }
   } catch (error) {
-    logError('Error getting document:', error);
-    return null; // Return null in case of an error
+    logError('[dbService/getUserProfile] Error getting document:', error);
+    return null; 
   }
 }
 
 //*CreateTrainer
 export async function createTrainer(userId) {
-  console.log("User Id being use to create the profile: ", userId);
+  console.log("User ID used to create the profile:", userId);
   const trainerDocRef = doc(db, "trainers", userId);
 
   try {
@@ -45,12 +43,12 @@ export async function createTrainer(userId) {
 }
 
 // Add a caught Pokémon to the current user's profile
-export async function addCaughtPokemon(pokemonId) {
+export async function addCaughtPokemon(pokemonId :number) {
   const user = auth.currentUser;
 
   if (!user) {
-    console.error("No user is currently logged in.");
-    return; // Early return if no user is authenticated
+    console.error("[dbService/addCaughtPokemon] No user is currently logged in.");
+    return;
   }
 
   const trainerDocRef = doc(db, "trainers", user.uid);
@@ -62,17 +60,21 @@ export async function addCaughtPokemon(pokemonId) {
       const currentPokemons = docSnap.data().pokemons || [];
 
       if (currentPokemons.includes(pokemonId)) {
-        console.log(`Pokemon ID ${pokemonId} is already caught.`);
-        return; // Early return if Pokémon is already caught
+        console.log(`[dbService/addCaughtPokemon] Pokemon ID ${pokemonId} is already caught.`);
+        return; 
       }
 
       await updateDoc(trainerDocRef, {
-        pokemons: arrayUnion(pokemonId) // Add Pokémon ID to the array
+        pokemons: arrayUnion(pokemonId) 
       });
-
-      console.log(`Pokemon ID ${pokemonId} added to trainer ${user.uid}.`);
+      
+      if (typeof refreshTrainerData === 'function') {
+        await refreshTrainerData();
+      }
+      
+      console.log(`[dbService/addCaughtPokemon] Pokemon ID ${pokemonId} added to trainer ${user.uid}.`);
     } else {
-      console.log('No trainer document found for the current user.');
+      console.log('[dbService/addCaughtPokemon] No trainer document found for the current user.');
     }
   } catch (error) {
     logError("Error adding caught Pokémon:", error);

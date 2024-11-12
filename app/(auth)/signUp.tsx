@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { router, Link } from 'expo-router';
 import { signUp } from '@/services/authService';
+import { fetchTrainerData } from '@/services/sessionProfile';
 
 const SignUp: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -10,6 +11,7 @@ const SignUp: React.FC = () => {
 
   const handleSignUp = () => {
     signUp(username.concat("@pokedex.com"), password, username);
+    fetchTrainerData();
     router.push('/list');
   };
 

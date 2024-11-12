@@ -41,7 +41,7 @@ export const fetchPokemonData = async () => {
     if (cachedData) {
       const { data, timestamp } = JSON.parse(cachedData);
       if (Date.now() - timestamp < CACHE_EXPIRATION_TIME) {
-        console.log("This comes from the cache");
+        console.log("[pokemonApi/fetchPokemonData] Profile Data(Cache Call): ", data);
         return data; // Use cached data
       }
     }
@@ -53,10 +53,10 @@ export const fetchPokemonData = async () => {
       CACHE_KEY,
       JSON.stringify({ data, timestamp: Date.now() })
     );
-    console.log("This comes from the API call");
+    console.log("[pokemonApi/fetchPokemonData] Profile Data(API Call):", data);
     return data;
   } catch (error) {
-    console.error("Error fetching Pokemon data:", error);
+    console.error("[pokemonApi/fetchPokemonData]Error fetching Pokemon data:", error);
     throw error;
   }
 };

@@ -15,6 +15,7 @@ const PokemonProfileLayout = () => {
         console.log('User connected: ', user?.email);
     }
 
+    
     useEffect(() => {
         const loadUserData = async ()  => {
             const user = getCurrentUser();

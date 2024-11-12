@@ -1,8 +1,15 @@
 // Login.tsx
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
 import { Link, router } from 'expo-router';
+import { BlurView } from "expo-blur";
 import { signIn } from '@/services/authService';
+import { fetchTrainerData } from '@/services/sessionProfile';
+
+import background from '@/assets/images/backGround.jpg';
+import trainnerRamdon from '@/assets/images/trainnerPic.jpg';
+import logoLogin from '@/assets/images/logo.png';
+
 
 const SignIn: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -10,35 +17,43 @@ const SignIn: React.FC = () => {
 
   const handleLogin = () => {
     signIn(username.concat("@pokedex.com"), password);
+    fetchTrainerData();
     router.push('/list');
   };
 
   return (
     <View style={styles.container}>
-      <Image source={require('@/assets/images/pokeball.png')} style={styles.image} />
-      <Text style={styles.title}>Inicia Sesión</Text>
+      <Image source={background} style={[styles.image, StyleSheet.absoluteFill]} />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre de usuario"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      <View style={styles.logoContainer}>
+        <Image source={logoLogin} style={styles.logo} />
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Inicia Sesión</Text>
-      </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <BlurView intensity={100}>
+          <View style={styles.login}>
 
-      <Link href="/signUp" style={styles.linkText}>
-        No tienes una cuenta? Registrate
-      </Link>
+            <View>
+              <Text style={styles.label}>E-mail</Text>
+              <TextInput style={styles.input} placeholder="ejemplo@gmail.com" />
+            </View>
+            <View>
+              <Text style={styles.label}>Contraseña</Text>
+              <TextInput style={styles.input} placeholder="contraseña" secureTextEntry={true} />
+            </View>
+
+            <TouchableOpacity style={[styles.button, { backgroundColor: '#00CFE9' }]}>
+              <Text style={styles.buttonText} onPress={handleLogin}>Iniciar Sesión</Text>
+            </TouchableOpacity>
+
+{/*             <TouchableOpacity style={[styles.button, { backgroundColor: '#4CAF50' }]} onPress={handleAnonymousLogin}>
+              <Text style={styles.buttonText}>Iniciar Sesión Anónima</Text>
+            </TouchableOpacity> */}
+
+
+          </View>
+        </BlurView>
+      </ScrollView>
     </View>
   );
 };
@@ -46,49 +61,94 @@ const SignIn: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff',
-    padding: 20,
   },
   image: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    textAlign: 'center',
-    marginBottom: 15,
+  logoContainer: {
+    marginTop: 50,
+    alignItems: 'center',
+  },
+  logo: {
+    height: 100,
+    width: 250,
+    resizeMode: 'contain',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 20,
+  },
+  login: {
+    width: 350,
+    height: 500,
+    borderColor: '#fff',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+  },
+  trainner: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderColor: '#fff',
+    borderWidth: 1,
   },
   input: {
-    width: '100%',
-    padding: 15,
+    width: 250,
+    height: 40,
+    borderColor: '#fff',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 10,
     marginVertical: 10,
-    borderWidth: 1,
-    borderColor: '#34495e',
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff90',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: 'white',
   },
   button: {
-    backgroundColor: '#e74c3c',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginTop: 15,
+    width: 250,
+    height: 40,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+    borderColor: '#fff',
+    borderWidth: 1,
   },
   buttonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '400',
+    color: 'white',
   },
-  linkText: {
-    color: '#2c3e50',
-    marginTop: 10,
-    textDecorationLine: 'underline',
+  userInfoContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  userInfoText: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: 'white',
+    marginVertical: 5,
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
   },
 });
+
 
 export default SignIn;
