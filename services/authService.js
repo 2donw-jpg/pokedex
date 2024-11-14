@@ -36,8 +36,7 @@ export const signUp = async (email, password, username) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user || auth.currentUser;
     if (user) {
-      await updateProfile(user, { displayName: username });
-      await createTrainer(user.uid);
+      await updateProfile(user, { displayName: username }).then(createTrainer(user.uid));
     } else {
       console.log("No user was found");
     }

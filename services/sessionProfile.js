@@ -11,7 +11,7 @@ export const refreshTrainerData = async () => {
         CACHE_KEY,
         JSON.stringify({ data })
       );
-      console.log("[sessionProfile/fetchTrainerData] Profile Data(Firebase call)")
+      console.log("Profile Data(Firebase call)")
       return data;
     } catch (error) {
       console.error("Error fetching Trainer data:", error);
@@ -25,7 +25,7 @@ export const fetchTrainerData = async () => {
       if (cachedData) {
         const { data } = JSON.parse(cachedData);
         if (data != null || data != undefined){
-            console.log("[sessionProfile/fetchTrainerData] Profile Data(Cache Call)")
+            console.log("Profile Data(Cache Call)")
             return data;
         }
       }
